@@ -10,7 +10,7 @@ const Stack = createNativeStackNavigator();
 export default function AuthNavigator() {
   return (
     <Stack.Navigator
-      initialRouteName="Register"
+      initialRouteName="Login"
       screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="Register"
