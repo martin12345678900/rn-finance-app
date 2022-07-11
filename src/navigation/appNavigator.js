@@ -31,7 +31,7 @@ const MenuItems = ['Home', 'Profile', 'Settings'];
 const height = Dimensions.get('screen').height;
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons/faRightFromBracket';
+import { faPowerOff } from '@fortawesome/free-solid-svg-icons/faPowerOff';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -125,14 +125,14 @@ const CustomDrawerContent = ({ navigation, theme }) => {
               marginBottom: 15,
             }}>
             <FontAwesomeIcon
-              icon={faRightFromBracket}
+              icon={faPowerOff}
               size={24}
               style={{ marginRight: 8, color: theme.colors.text2 }}
             />
             <Text
               style={{
                 fontSize: 18,
-                fontWeight: '900',
+                fontWeight: '600',
                 color: theme.colors.text2,
               }}>
               Logout
