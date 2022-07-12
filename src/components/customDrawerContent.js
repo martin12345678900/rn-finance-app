@@ -19,6 +19,7 @@ const MenuItems = ['Home', 'Profile', 'Settings'];
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faPowerOff } from '@fortawesome/free-solid-svg-icons/faPowerOff';
+import { useUser } from '../context/userContext';
 
 const height = Dimensions.get('screen').height;
 
@@ -26,6 +27,7 @@ const CustomDrawerContent = ({ navigation, theme }) => {
   const [active, setActive] = useState(0);
 
   const { theme: myTheme, changeTheme } = useMyTheme();
+  const { changeLoginStatus } = useUser();
 
   return (
     <View style={{ flex: 1 }}>
@@ -110,7 +112,8 @@ const CustomDrawerContent = ({ navigation, theme }) => {
               justifyContent: 'flex-start',
               alignItems: 'center',
               marginBottom: 15,
-            }}>
+            }}
+            onPress={() => changeLoginStatus(false)}>
             <FontAwesomeIcon
               icon={faPowerOff}
               size={24}

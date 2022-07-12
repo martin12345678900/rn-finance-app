@@ -1,28 +1,21 @@
 import React, { useState } from 'react';
+
 import AuthNavigator from './authNavigator';
 import AppNavigator from './appNavigator';
 import { NavigationContainer } from '@react-navigation/native';
+
 import { useTheme } from '../context/themeContext';
 import { Dark as DarkTheme, Light as LightTheme } from '../themes';
 
-const Navigation = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { theme } = useTheme();
+import UserContextProvider, { useUser } from '../context/userContext';
 
-  const changeLoginStatus = status => {
-    if (typeof status === 'boolean') setIsLoggedIn(status);
-  };
+const Navigation = () => {
+  const { theme } = useTheme();
+  const { isLoggedIn } = useUser();
 
   return (
     <NavigationContainer theme={theme === 'light' ? LightTheme : DarkTheme}>
-      {!isLoggedIn ? (
-        <AuthNavigator
-          isLoggedIn={isLoggedIn}
-          changeLoginStatus={changeLoginStatus}
-        />
-      ) : (
-        <AppNavigator />
-      )}
+      {!isLoggedIn ? <AuthNavigator /> : <AppNavigator />}
     </NavigationContainer>
   );
 };

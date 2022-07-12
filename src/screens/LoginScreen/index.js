@@ -7,6 +7,7 @@ import { useFormState, Form } from 'react-native-use-form';
 import { TextInput, Button, HelperText } from 'react-native-paper';
 
 import { useTheme } from '@react-navigation/native';
+import { useUser } from '../../context/userContext';
 
 function looksLikeMail(email) {
   let lastAtPos = email.lastIndexOf('@');
@@ -20,28 +21,26 @@ function looksLikeMail(email) {
   );
 }
 
-export default function LoginScreen({ navigation, changeLoginStatus }) {
+export default function LoginScreen({ navigation }) {
   const theme = useTheme();
+  const { changeLoginStatus } = useUser();
 
-  const [
-    { errors, submit, formProps, hasError },
-    { email, password, username },
-  ] = useFormState(
-    {
-      email: '',
-      password: '',
-      username: '',
-    },
-    {
-      onChange: latestValues => {
-        //console.log(latestValues);
+  const [{ errors, submit, formProps, hasError }, { email, password }] =
+    useFormState(
+      {
+        email: '',
+        password: '',
       },
-      onSubmit: submittedValues => {
-        console.log(submittedValues);
-        changeLoginStatus(true);
+      {
+        onChange: latestValues => {
+          //console.log(latestValues);
+        },
+        onSubmit: submittedValues => {
+          console.log(submittedValues);
+          changeLoginStatus(true);
+        },
       },
-    },
-  );
+    );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -69,19 +68,6 @@ export default function LoginScreen({ navigation, changeLoginStatus }) {
         />
         <HelperText type="error" visible={hasError('email')}>
           {errors.email}
-        </HelperText>
-        <TextInput
-          mode="outlined"
-          label="Username"
-          error={hasError('username')}
-          {...username('username', {
-            required: true,
-            minLength: 6,
-          })}
-          style={{ borderColor: 'black' }}
-        />
-        <HelperText type="error" visible={hasError('username')}>
-          {errors.username}
         </HelperText>
         <TextInput
           mode="outlined"

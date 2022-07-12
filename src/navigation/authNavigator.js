@@ -9,8 +9,9 @@ import { useTheme } from '@react-navigation/native';
 
 const Stack = createNativeStackNavigator();
 
-export default function AuthNavigator({ changeLoginStatus }) {
+export default function AuthNavigator() {
   const theme = useTheme();
+
   return (
     <View style={{ flex: 1, backgroundColor: theme.colors.boxBackground }}>
       <Stack.Navigator
@@ -22,9 +23,7 @@ export default function AuthNavigator({ changeLoginStatus }) {
         />
         <Stack.Screen
           name="Login"
-          children={props => (
-            <LoginScreen {...props} changeLoginStatus={changeLoginStatus} />
-          )}
+          children={props => <LoginScreen {...props} />}
         />
       </Stack.Navigator>
     </View>
