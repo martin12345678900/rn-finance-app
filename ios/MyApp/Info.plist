@@ -23,6 +23,9 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
+
+	<key>NSCameraUsageDescription</key>
+	<string>Allow the user to use the camera to take pictures.</string>
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
