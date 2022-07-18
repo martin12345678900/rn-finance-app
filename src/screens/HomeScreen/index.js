@@ -7,6 +7,8 @@ import {
   NativeEventEmitter,
   LogBox,
   ScrollView,
+  View,
+  Button,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,6 +22,7 @@ import DocumentReader, {
   DocumentReaderScenario,
   RNRegulaDocumentReader,
   DocumentReaderCompletion,
+  Enum,
 } from '@regulaforensics/react-native-document-reader-api';
 
 import Permissions from 'react-native-permissions';
@@ -37,15 +40,17 @@ export default function HomeScreen({ navigation }) {
   const { changeTheme, theme: myTheme } = useMyTheme();
   const theme = useTheme();
 
-  const [scenarios, setScenarios] = useState([]);
   const [radioButtons, setRadioButtons] = useState([]);
   const [selectedRadioButton, setSelectedRadioButton] = useState({
     id: '1',
     label: 'Mrz',
     value: 'Mrz',
   });
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     async function initializeDocumentReader() {
       readFile(licPath, 'base64').then(license => {
         DocumentReader.initializeReader(
@@ -69,12 +74,13 @@ export default function HomeScreen({ navigation }) {
                 }
                 setRadioButtons(scenariosArr);
                 //console.log('currentScenarios', currentScenarios);
+                setLoading(false);
               },
               err => console.log(err),
             );
           },
           err => {
-            console.log(err);
+            console.log('err', err);
           },
         );
       });
@@ -85,65 +91,83 @@ export default function HomeScreen({ navigation }) {
         JSON.parse(event['msg']),
       );
 
-      console.log('results', results?.results?.textResult?.fields);
+      if (results?.results?.textResult?.fields) {
+        const resultsArr = [];
+        results.results.textResult.fields.forEach(field => {
+          resultsArr.push({
+            fieldName: field.fieldName,
+            fieldType: field.fieldType,
+            values: field.values.map(value => ({
+              sourceType: value.sourceType,
+              value: value.value,
+              originalValue: value.originalValue,
+              pageIndex: value.pageIndex,
+            })),
+          });
+        });
+        setResults(resultsArr);
+      }
     });
 
     initializeDocumentReader();
+
+    //return () => eventManager.removeAllListeners();
   }, []);
 
   function handleButtonChange(newButtonsArray) {
-    setSelectedRadioButton(
-      newButtonsArray.find(button => button.selected === true),
-    );
+    setSelectedRadioButton(newButtonsArray.find(b => b.selected));
   }
 
-  console.log(selectedRadioButton, 'selectedRadioButton');
+  function clearResults() {
+    setResults([]);
+  }
 
-  return (
+  console.log('results', results);
+
+  return loading ? (
+    <Text>Loading...</Text>
+  ) : (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity
-        style={{ padding: 10, marginBottom: 30 }}
+        style={{
+          padding: 10,
+          backgroundColor: theme.colors.white,
+          borderRadius: 10,
+        }}
         onPress={() => {
           console.log('pressss');
-          console.log(selectedRadioButton.value);
           DocumentReader.setConfig(
             {
               functionality: {
-                showTorchButton: true,
-                showCloseButton: true,
-                showCaptureButton: true,
-                showCaptureButtonDelayFromDetect: 3,
-                videoCaptureMotionControl: true,
-                singleResult: true,
+                // showCaptureButtonDelayFromDetect: 15,
+                //videoCaptureMotionControl: true,
+                //singleResult: true,
+                // showCameraSwitchButton: true,
+                captureMode: Enum.CaptureMode.CAPTURE_FRAME,
               },
               customization: {
-                showResultStatusMessages: true,
                 showStatusMessages: true,
                 statusTextSize: 18,
                 showHelpAnimation: true,
               },
               processParams: {
-                scenario: selectedRadioButton.value,
-                logs: true,
+                scenario: 'FullProcess',
+                captureButtonScenario: 'FullProcess',
+                //timeoutFromFirstDetect: 5.0,
               },
             },
             response => {},
             error => console.log(error),
           );
 
-          DocumentReader.get;
           DocumentReader.showScanner(
             s => {},
             e => {},
           );
         }}>
-        <Text>Scan Document</Text>
+        <Text style={{ color: theme.colors.black }}>Scan Document</Text>
       </TouchableOpacity>
-      <ScrollView
-        style={{ padding: 5, alignSelf: 'center' }}
-        showsVerticalScrollIndicator={false}>
-        <RadioGroup radioButtons={radioButtons} onPress={handleButtonChange} />
-      </ScrollView>
+      <Button onPress={clearResults} title="Clear Results" />
     </SafeAreaView>
   );
 }

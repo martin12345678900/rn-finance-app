@@ -23,9 +23,11 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
-
-	<key>NSCameraUsageDescription</key>
-	<string>Allow the user to use the camera to take pictures.</string>
+<key>NSCameraUsageDescription</key>
+<string>App needs permission to access your phone camera.</string><key>NSPhotoLibraryAddUsageDescription</key>
+<string>App store photos in your phone library.</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>App store photos in your phone library.</string>
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
