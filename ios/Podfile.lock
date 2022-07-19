@@ -897,8 +897,8 @@ SPEC CHECKSUMS:
   ReactCommon: 095366164a276d91ea704ce53cb03825c487a3f2
   RegulaCommon: 9c3fa05d10ca05c1e0f5007524c92d72e871d3f2
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
-  RNDocumentReaderApi: e8a24ebd9ccff499edc38ad143e48f0965e30ac4
-  RNDocumentReaderCore: 91c171ed24fe775cfc222e0fcac20af7ed0625b9
+  RNDocumentReaderApi: 34e98014d4fdfe1a0208ac54c016754ffc9a1d51
+  RNDocumentReaderCore: 10b9d461fe0bcf960edd9314f445feff310b8cbf
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: bad495418bcbd3ab47017a38d93d290ebd406f50
   RNMLKitTextRecognition: 5316d4f6bbb4dba3d2d709620e45b901e36dd144

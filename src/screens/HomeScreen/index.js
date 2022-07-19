@@ -6,9 +6,8 @@ import {
   TouchableOpacity,
   NativeEventEmitter,
   LogBox,
-  ScrollView,
-  View,
   Button,
+  ScrollView,
 } from 'react-native';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -23,9 +22,23 @@ import DocumentReader, {
   RNRegulaDocumentReader,
   DocumentReaderCompletion,
   Enum,
+  ScenarioIdentifier,
 } from '@regulaforensics/react-native-document-reader-api';
 
 import Permissions from 'react-native-permissions';
+
+// const licenseProps = Platform.select({
+//   ios: {
+//     path: `${RNFS.MainBundlePath}/regula.license`,
+//     readFunc: RNFS.readFile
+//   },
+//   android: {
+//     path: `regula.license`,
+//     readFunc: RNFS.readFileAssets
+//   }
+// })
+
+
 
 var licPath =
   Platform.OS === 'ios'
@@ -53,6 +66,7 @@ export default function HomeScreen({ navigation }) {
     setLoading(true);
     async function initializeDocumentReader() {
       readFile(licPath, 'base64').then(license => {
+        console.log('license:', license)
         DocumentReader.initializeReader(
           license,
           response => {
@@ -97,12 +111,13 @@ export default function HomeScreen({ navigation }) {
           resultsArr.push({
             fieldName: field.fieldName,
             fieldType: field.fieldType,
-            values: field.values.map(value => ({
-              sourceType: value.sourceType,
-              value: value.value,
-              originalValue: value.originalValue,
-              pageIndex: value.pageIndex,
-            })),
+            value: field.values.map(value => value.value)[0],
+            // values: field.values.map(value => ({
+            //   sourceType: value.sourceType,
+            //   value: value.value,
+            //   originalValue: value.originalValue,
+            //   pageIndex: value.pageIndex,
+            // })),
           });
         });
         setResults(resultsArr);
@@ -122,52 +137,70 @@ export default function HomeScreen({ navigation }) {
     setResults([]);
   }
 
+  // DocumentReader.getLicenseExpiryDate(
+  //   expireDate => {
+  //     //console.log(expireDate, 'expireDate');
+  //   },
+  //   error => {
+  //     //console.log(error);
+  //   },
+  // );
+
   console.log('results', results);
 
-  return loading ? (
-    <Text>Loading...</Text>
-  ) : (
+  return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        style={{
-          padding: 10,
-          backgroundColor: theme.colors.white,
-          borderRadius: 10,
-        }}
-        onPress={() => {
-          console.log('pressss');
-          DocumentReader.setConfig(
-            {
-              functionality: {
-                // showCaptureButtonDelayFromDetect: 15,
-                //videoCaptureMotionControl: true,
-                //singleResult: true,
-                // showCameraSwitchButton: true,
-                captureMode: Enum.CaptureMode.CAPTURE_FRAME,
-              },
-              customization: {
-                showStatusMessages: true,
-                statusTextSize: 18,
-                showHelpAnimation: true,
-              },
-              processParams: {
-                scenario: 'FullProcess',
-                captureButtonScenario: 'FullProcess',
-                //timeoutFromFirstDetect: 5.0,
-              },
-            },
-            response => {},
-            error => console.log(error),
-          );
+      {loading ? (
+        <Text>Loading...</Text>
+      ) : (
+        <>
+          <TouchableOpacity
+            style={{
+              padding: 10,
+              backgroundColor: theme.colors.white,
+              borderRadius: 10,
+              margin: 15,
+            }}
+            onPress={() => {
+              console.log('pressss');
+              DocumentReader.setConfig(
+                {
+                  functionality: {
+                    // showCaptureButtonDelayFromDetect: 15,
+                    //videoCaptureMotionControl: true,
+                    //singleResult: true,
+                    // showCameraSwitchButton: true,
+                    captureMode: Enum.CaptureMode.CAPTURE_FRAME,
+                  },
+                  customization: {
+                    showStatusMessages: true,
+                    statusTextSize: 18,
+                    showHelpAnimation: true,
+                  },
+                  processParams: {
+                    scenario: ScenarioIdentifier.SCENARIO_FULL_PROCESS,
+                    captureButtonScenario:
+                      ScenarioIdentifier.SCENARIO_FULL_PROCESS,
+                    //timeoutFromFirstDetect: 5.0,
+                  },
+                },
+                response => { },
+                error => console.log(error),
+              );
 
-          DocumentReader.showScanner(
-            s => {},
-            e => {},
-          );
-        }}>
-        <Text style={{ color: theme.colors.black }}>Scan Document</Text>
-      </TouchableOpacity>
-      <Button onPress={clearResults} title="Clear Results" />
+              DocumentReader.showScanner(
+                s => { },
+                e => { },
+              );
+            }}>
+            <Text style={{ color: theme.colors.black }}>Scan Document</Text>
+          </TouchableOpacity>
+          <Button onPress={clearResults} title="Clear Results" />
+          <ScrollView>
+            <Text>{JSON.stringify(results)}</Text>
+          </ScrollView>
+        </>
+      )}
     </SafeAreaView>
   );
 }
